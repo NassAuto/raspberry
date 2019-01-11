@@ -9,7 +9,7 @@ import sys
 import errno
 from signal import signal, SIGPIPE, SIG_DFL
 
-#signal(SIGPIPE, SIG_DFL)
+signal(SIGPIPE, SIG_DFL)
 
 class SplitFrames(object):
     def __init__(self, connection):
@@ -47,11 +47,11 @@ try:
         # Write the terminating 0-length to the connection to let the
         # server know we're done
         connection.write(struct.pack('<L', 0))
-#except IOError as e:
-#    if e.errno == errno.EPIPE:
-#        print("Broken pipe error")
-#        connection.close()
-#    print("something went wrong!")
+except IOError as e:
+    if e.errno == errno.EPIPE:
+        print("Broken pipe error")
+        connection.close()
+    print("something went wrong!")
 finally:
     connection.close()
     client_socket.close()
